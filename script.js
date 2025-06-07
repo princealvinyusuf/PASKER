@@ -65,6 +65,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const el = document.getElementById(key);
             if (el) el.value = job[key] || '';
         });
+        // Explicitly set the job-id hidden field
+        document.getElementById('job-id').value = job.id;
         editing = true;
         cancelEditBtn.style.display = 'inline-block';
     };
