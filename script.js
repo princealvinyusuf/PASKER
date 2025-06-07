@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     const jobForm = document.getElementById('job-form');
     const jobsTableBody = document.querySelector('#jobs-table tbody');
+    const cancelEditBtn = document.getElementById('cancel-edit');
+    let editing = false;
 
     function fetchJobs() {
         fetch('jobs.php')
@@ -19,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <td>${job.application_deadline || ''}</td>
                         <td>${job.created_at || ''}</td>
                         <td>
+                            <button class="action-btn" onclick='editJob(${JSON.stringify(job)})'>Edit</button>
                             <button class="action-btn" onclick="deleteJob(${job.id})">Delete</button>
                         </td>
                     `;
@@ -26,6 +29,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
     }
+
+    window.editJob = function(job) {
+        Object.keys(job).forEach(key => {
+            const el = document.getElementById(key);
+            if (el) el.value = job[key] || '';
+        });
+        editing = true;
+        cancelEditBtn.style.display = 'inline-block';
+    };
 
     window.deleteJob = function(id) {
         if (confirm('Delete this job?')) {
@@ -35,7 +47,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
-    // Add job (main form)
     jobForm.addEventListener('submit', function(e) {
         e.preventDefault();
         const data = {};
@@ -44,31 +55,38 @@ document.addEventListener('DOMContentLoaded', function() {
                 data[el.id] = el.value;
             }
         });
-        fetch('jobs.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        })
-        .then(res => res.json())
-        .then(() => {
-            jobForm.reset();
-            fetchJobs();
-        });
+        if (editing) {
+            fetch('jobs.php', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(() => {
+                editing = false;
+                jobForm.reset();
+                cancelEditBtn.style.display = 'none';
+                fetchJobs();
+            });
+        } else {
+            fetch('jobs.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(() => {
+                jobForm.reset();
+                fetchJobs();
+            });
+        }
     });
 
-    // Chevron icon toggle for more fields
-    var moreFields = document.getElementById('moreFields');
-    var chevronIcon = document.getElementById('chevron-icon');
-    if (moreFields && chevronIcon) {
-        moreFields.addEventListener('show.bs.collapse', function () {
-            chevronIcon.classList.remove('bi-chevron-down');
-            chevronIcon.classList.add('bi-chevron-up');
-        });
-        moreFields.addEventListener('hide.bs.collapse', function () {
-            chevronIcon.classList.remove('bi-chevron-up');
-            chevronIcon.classList.add('bi-chevron-down');
-        });
-    }
+    cancelEditBtn.addEventListener('click', function() {
+        editing = false;
+        jobForm.reset();
+        cancelEditBtn.style.display = 'none';
+    });
 
     fetchJobs();
 }); 
