@@ -34,8 +34,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         <td>${job.application_deadline || ''}</td>
                         <td>${job.created_at || ''}</td>
                         <td>
-                            <button class="action-btn" onclick='editJob(${JSON.stringify(job)})'>Edit</button>
-                            <button class="action-btn" onclick="deleteJob(${job.id})">Delete</button>
+                            <button class="btn btn-outline-primary btn-sm me-1" onclick='editJob(${JSON.stringify(job)})'><i class="bi bi-pencil"></i> Edit</button>
+                            <button class="btn btn-outline-danger btn-sm" onclick="deleteJob(${job.id})"><i class="bi bi-trash"></i> Delete</button>
                         </td>
                     `;
                     jobsTableBody.appendChild(tr);
