@@ -12,7 +12,17 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(res => res.json())
             .then(jobs => {
                 jobsTableBody.innerHTML = '';
+                // Dashboard card elements
+                const totalJobsEl = document.getElementById('total-jobs');
+                const openJobsEl = document.getElementById('open-jobs');
+                const closedJobsEl = document.getElementById('closed-jobs');
+                // Count jobs
+                let total = jobs.length;
+                let open = 0;
+                let closed = 0;
+                const today = new Date();
                 jobs.forEach(job => {
+                    // Render table row
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td>${job.title || ''}</td>
@@ -29,7 +39,24 @@ document.addEventListener('DOMContentLoaded', function() {
                         </td>
                     `;
                     jobsTableBody.appendChild(tr);
+                    // Count open/closed
+                    if (job.application_deadline) {
+                        const deadline = new Date(job.application_deadline);
+                        // Set time to end of day for deadline
+                        deadline.setHours(23,59,59,999);
+                        if (deadline >= today) {
+                            open++;
+                        } else {
+                            closed++;
+                        }
+                    } else {
+                        closed++;
+                    }
                 });
+                // Update dashboard cards
+                if (totalJobsEl) totalJobsEl.textContent = total;
+                if (openJobsEl) openJobsEl.textContent = open;
+                if (closedJobsEl) closedJobsEl.textContent = closed;
             });
     }
 
