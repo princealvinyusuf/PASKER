@@ -50,6 +50,16 @@
                 <h2 class="h5 card-title mb-3"><span class="me-2">📝</span>Add / Edit Job</h2>
                 <form id="job-form" aria-label="Job form">
                     <input type="hidden" id="job-id">
+                    <!-- Bulk Upload Section -->
+                    <div class="mb-3">
+                        <label class="form-label">Bulk Upload Jobs (Excel .xlsx or .csv)</label>
+                        <div class="d-flex gap-2">
+                            <input type="file" id="bulk-upload-input" accept=".xlsx,.csv" class="form-control" style="max-width:300px;">
+                            <button type="button" id="bulk-upload-btn" class="btn btn-success">Upload Bulk Jobs</button>
+                        </div>
+                        <div id="bulk-upload-status" class="form-text text-success"></div>
+                    </div>
+                    <!-- End Bulk Upload Section -->
                     <div class="row g-3">
                         <div class="col-12 col-md-6 col-lg-4">
                             <label class="form-label">Title</label>
@@ -175,6 +185,8 @@
         <span class="text-muted small">&copy; 2024 Job Admin Dashboard. All rights reserved.</span>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SheetJS for Excel parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html> 

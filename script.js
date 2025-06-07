@@ -3,6 +3,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const jobsTableBody = document.querySelector('#jobs-table tbody');
     const cancelEditBtn = document.getElementById('cancel-edit');
     let editing = false;
+    const bulkInput = document.getElementById('bulk-upload-input');
+    const bulkBtn = document.getElementById('bulk-upload-btn');
+    const bulkStatus = document.getElementById('bulk-upload-status');
 
     function fetchJobs() {
         fetch('jobs.php')
@@ -86,6 +89,54 @@ document.addEventListener('DOMContentLoaded', function() {
         editing = false;
         jobForm.reset();
         cancelEditBtn.style.display = 'none';
+    });
+
+    bulkBtn.addEventListener('click', function() {
+        const file = bulkInput.files[0];
+        if (!file) {
+            bulkStatus.textContent = 'Please select an Excel (.xlsx or .csv) file.';
+            bulkStatus.classList.remove('text-success');
+            bulkStatus.classList.add('text-danger');
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            let data = new Uint8Array(e.target.result);
+            let workbook = XLSX.read(data, {type: 'array'});
+            let sheet = workbook.Sheets[workbook.SheetNames[0]];
+            let jobs = XLSX.utils.sheet_to_json(sheet);
+            if (!Array.isArray(jobs) || jobs.length === 0) {
+                bulkStatus.textContent = 'No jobs found in the file.';
+                bulkStatus.classList.remove('text-success');
+                bulkStatus.classList.add('text-danger');
+                return;
+            }
+            // Send jobs array to backend
+            fetch('jobs.php?bulk=1', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ jobs })
+            })
+            .then(res => res.json())
+            .then(result => {
+                if (result.success) {
+                    bulkStatus.textContent = `Successfully uploaded ${result.count || jobs.length} jobs.`;
+                    bulkStatus.classList.remove('text-danger');
+                    bulkStatus.classList.add('text-success');
+                    fetchJobs();
+                } else {
+                    bulkStatus.textContent = result.error || 'Bulk upload failed.';
+                    bulkStatus.classList.remove('text-success');
+                    bulkStatus.classList.add('text-danger');
+                }
+            })
+            .catch(() => {
+                bulkStatus.textContent = 'Bulk upload failed.';
+                bulkStatus.classList.remove('text-success');
+                bulkStatus.classList.add('text-danger');
+            });
+        };
+        reader.readAsArrayBuffer(file);
     });
 
     fetchJobs();
