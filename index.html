@@ -6,6 +6,15 @@
     <title>Job Admin Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        .bulk-upload-box {
+            border: 2px dotted #0d6efd;
+            border-radius: 10px;
+            padding: 18px 18px 10px 18px;
+            margin-bottom: 1.5rem;
+            background: #f8faff;
+        }
+    </style>
 </head>
 <body class="bg-light">
     <header class="bg-primary bg-gradient py-4 mb-4 text-white text-center">
@@ -51,14 +60,16 @@
                 <form id="job-form" aria-label="Job form">
                     <input type="hidden" id="job-id">
                     <!-- Bulk Upload Section -->
-                    <div class="mb-3">
-                        <label class="form-label">Bulk Upload Jobs (Excel .xlsx or .csv)</label>
-                        <div class="d-flex gap-2">
-                            <input type="file" id="bulk-upload-input" accept=".xlsx,.csv" class="form-control" style="max-width:300px;">
-                            <button type="button" id="bulk-upload-btn" class="btn btn-success">Upload Bulk Jobs</button>
-                            <a href="downloads/add_jobs.xlsx" download class="btn btn-outline-primary" id="download-template-btn">Download Template</a>
+                    <div class="bulk-upload-box">
+                        <div class="mb-3">
+                            <label class="form-label">Bulk Upload Jobs (Excel .xlsx or .csv)</label>
+                            <div class="d-flex gap-2">
+                                <input type="file" id="bulk-upload-input" accept=".xlsx,.csv" class="form-control" style="max-width:300px;">
+                                <button type="button" id="bulk-upload-btn" class="btn btn-success">Upload Bulk Jobs</button>
+                                <a href="downloads/add_jobs.xlsx" download class="btn btn-outline-primary" id="download-template-btn">Download Template</a>
+                            </div>
+                            <div id="bulk-upload-status" class="form-text text-success"></div>
                         </div>
-                        <div id="bulk-upload-status" class="form-text text-success"></div>
                     </div>
                     <!-- End Bulk Upload Section -->
                     <hr class="my-4">
