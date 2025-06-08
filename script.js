@@ -168,5 +168,32 @@ document.addEventListener('DOMContentLoaded', function() {
         reader.readAsArrayBuffer(file);
     });
 
+    // Export All Job Data
+    const exportBtn = document.getElementById('export-all-jobs-btn');
+    if (exportBtn) {
+        exportBtn.addEventListener('click', function() {
+            const exportStatus = document.getElementById('export-status');
+            exportStatus.textContent = 'Preparing export...';
+            fetch('jobs.php')
+                .then(res => res.json())
+                .then(jobs => {
+                    if (!Array.isArray(jobs) || jobs.length === 0) {
+                        exportStatus.textContent = 'No job data to export.';
+                        return;
+                    }
+                    // Remove internal fields if needed
+                    const jobsForExport = jobs.map(({id, ...rest}) => rest);
+                    const ws = XLSX.utils.json_to_sheet(jobsForExport);
+                    const wb = XLSX.utils.book_new();
+                    XLSX.utils.book_append_sheet(wb, ws, 'Jobs');
+                    XLSX.writeFile(wb, 'all_jobs.xlsx');
+                    exportStatus.textContent = 'Export successful!';
+                })
+                .catch(() => {
+                    exportStatus.textContent = 'Export failed.';
+                });
+        });
+    }
+
     fetchJobs();
 }); 
