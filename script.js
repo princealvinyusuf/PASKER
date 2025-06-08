@@ -174,6 +174,11 @@ document.addEventListener('DOMContentLoaded', function() {
         exportBtn.addEventListener('click', function() {
             const exportStatus = document.getElementById('export-status');
             exportStatus.textContent = 'Preparing export...';
+            if (typeof XLSX === 'undefined') {
+                exportStatus.textContent = 'Export failed: XLSX library not loaded.';
+                console.error('XLSX is not defined. Make sure xlsx.full.min.js is loaded before script.js');
+                return;
+            }
             fetch('jobs.php')
                 .then(res => res.json())
                 .then(jobs => {
@@ -189,8 +194,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     XLSX.writeFile(wb, 'all_jobs.xlsx');
                     exportStatus.textContent = 'Export successful!';
                 })
-                .catch(() => {
+                .catch((err) => {
                     exportStatus.textContent = 'Export failed.';
+                    console.error('Export error:', err);
                 });
         });
     }
