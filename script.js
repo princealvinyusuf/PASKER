@@ -12,20 +12,16 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(res => res.json())
             .then(jobs => {
                 jobsTableBody.innerHTML = '';
-                // Sort jobs by created_at date in descending order
-                jobs.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-                // Limit to top 5 latest jobs
-                const latestJobs = jobs.slice(0, 5);
                 // Dashboard card elements
                 const totalJobsEl = document.getElementById('total-jobs');
                 const openJobsEl = document.getElementById('open-jobs');
                 const closedJobsEl = document.getElementById('closed-jobs');
                 // Count jobs
-                let total = latestJobs.length; // Update total to reflect the latest jobs
+                let total = jobs.length;
                 let open = 0;
                 let closed = 0;
                 const today = new Date();
-                latestJobs.forEach(job => {
+                jobs.forEach(job => {
                     // Render table row
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
@@ -174,12 +170,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Export All Job Data
     const exportBtn = document.getElementById('export-all-jobs-btn');
-    const exportStatus = document.getElementById('export-status');
-    if (exportStatus) {
-        exportStatus.textContent = '[DEBUG] script.js loaded. Button ' + (exportBtn ? 'found' : 'NOT found');
-    }
     if (exportBtn) {
         exportBtn.addEventListener('click', function() {
+            const exportStatus = document.getElementById('export-status');
             exportStatus.textContent = 'Preparing export...';
             if (typeof XLSX === 'undefined') {
                 exportStatus.textContent = 'Export failed: XLSX library not loaded.';
