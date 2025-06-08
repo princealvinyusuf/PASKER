@@ -21,7 +21,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 let open = 0;
                 let closed = 0;
                 const today = new Date();
-                jobs.forEach(job => {
+                // Limit to top 5 latest jobs
+                const latestJobs = jobs.slice(0, 5);
+                latestJobs.forEach(job => {
                     // Render table row
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
