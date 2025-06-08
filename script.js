@@ -170,9 +170,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Export All Job Data
     const exportBtn = document.getElementById('export-all-jobs-btn');
+    const exportStatus = document.getElementById('export-status');
+    if (exportStatus) {
+        exportStatus.textContent = '[DEBUG] script.js loaded. Button ' + (exportBtn ? 'found' : 'NOT found');
+    }
     if (exportBtn) {
         exportBtn.addEventListener('click', function() {
-            const exportStatus = document.getElementById('export-status');
             exportStatus.textContent = 'Preparing export...';
             if (typeof XLSX === 'undefined') {
                 exportStatus.textContent = 'Export failed: XLSX library not loaded.';
