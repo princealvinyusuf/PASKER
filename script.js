@@ -202,33 +202,4 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     fetchJobs();
-
-    // Add this after DOMContentLoaded
-    const isJobPage = window.location.pathname.endsWith('job.html');
-
-    if (isJobPage) {
-        const jobsTableBody = document.querySelector('#jobs-table tbody');
-        function fetchJobsForJobPage() {
-            fetch('jobs.php')
-                .then(res => res.json())
-                .then(jobs => {
-                    jobsTableBody.innerHTML = '';
-                    jobs.forEach(job => {
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `
-                            <td>${job.title || ''}</td>
-                            <td>${job.company_name || ''}</td>
-                            <td>${job.location || ''}</td>
-                            <td>${job.employment_type || ''}</td>
-                            <td>${job.experience_level || ''}</td>
-                            <td>${job.salary || ''}</td>
-                            <td>${job.application_deadline || ''}</td>
-                            <td>${job.created_at || ''}</td>
-                        `;
-                        jobsTableBody.appendChild(tr);
-                    });
-                });
-        }
-        fetchJobsForJobPage();
-    }
 }); 
