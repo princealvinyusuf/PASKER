@@ -48,6 +48,17 @@ switch ($method) {
             ]);
             break;
         }
+        // If top=5, return the latest 5 jobs as a plain array (no pagination, no search)
+        if (isset($_GET['top']) && intval($_GET['top']) > 0) {
+            $limit = intval($_GET['top']);
+            $result = $conn->query("SELECT * FROM jobs ORDER BY created_at DESC LIMIT $limit");
+            $jobs = [];
+            while ($row = $result->fetch_assoc()) {
+                $jobs[] = $row;
+            }
+            echo json_encode($jobs);
+            break;
+        }
         // Pagination and search
         $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
         $per_page = isset($_GET['per_page']) ? max(1, intval($_GET['per_page'])) : 50;
