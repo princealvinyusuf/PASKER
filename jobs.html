@@ -48,6 +48,11 @@
     </header>
 
     <main class="container my-4" style="max-width: 100%">
+        <div class="row mb-3">
+            <div class="col-md-6 mx-auto">
+                <input type="text" id="search-input" class="form-control" placeholder="Search jobs...">
+            </div>
+        </div>
         <div class="table-responsive">
             <table id="jobs-table" class="table table-hover align-middle table-bordered">
                 <thead class="table-light">
@@ -92,9 +97,11 @@
     document.addEventListener('DOMContentLoaded', function() {
         const jobsTableBody = document.getElementById('jobs-table-body');
         const noJobs = document.getElementById('no-jobs');
+        const searchInput = document.getElementById('search-input');
+        let allJobs = [];
 
         function escapeHTML(str) {
-            return str ? str.replace(/[&<>"]|'/g, function(tag) {
+            return str ? str.replace(/[&<>"']/g, function(tag) {
                 const charsToReplace = {
                     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
                 };
@@ -102,52 +109,80 @@
             }) : '';
         }
 
-        function renderJobRow(job) {
+        function highlight(text, term) {
+            if (!term) return text;
+            const re = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+            return text.replace(re, '<mark>$1</mark>');
+        }
+
+        function renderJobRow(job, searchTerm = '') {
+            // For each field, highlight the search term if present
+            function h(val) {
+                return highlight(escapeHTML(val || ''), searchTerm);
+            }
             return `<tr>
-                <td>${escapeHTML(job.title)}</td>
-                <td>${escapeHTML(job.company_name)}</td>
-                <td>${escapeHTML(job.location)}</td>
-                <td>${escapeHTML(job.salary)}</td>
-                <td>${escapeHTML(job.employment_type)}</td>
-                <td>${escapeHTML(job.experience_level)}</td>
-                <td>${escapeHTML(job.industry)}</td>
-                <td>${escapeHTML(job.remote_option)}</td>
-                <td>${escapeHTML(job.job_function)}</td>
-                <td>${escapeHTML(job.application_deadline)}</td>
-                <td>${escapeHTML(job.created_at)}</td>
-                <td>${escapeHTML(job.education_level)}</td>
-                <td>${escapeHTML(job.company_size)}</td>
-                <td>${escapeHTML(job.languages_required)}</td>
-                <td>${escapeHTML(job.work_schedule)}</td>
-                <td>${escapeHTML(job.job_duration)}</td>
-                <td>${escapeHTML(job.posted_by)}</td>
-                <td>${escapeHTML(job.hiring_manager_contact)}</td>
-                <td><a href="${escapeHTML(job.company_website)}" target="_blank">${escapeHTML(job.company_website)}</a></td>
-                <td>${escapeHTML(job.how_to_apply)}</td>
-                <td>${escapeHTML(job.benefits)}</td>
-                <td>${escapeHTML(job.required_skills)}</td>
-                <td>${escapeHTML(job.description)}</td>
+                <td>${h(job.title)}</td>
+                <td>${h(job.company_name)}</td>
+                <td>${h(job.location)}</td>
+                <td>${h(job.salary)}</td>
+                <td>${h(job.employment_type)}</td>
+                <td>${h(job.experience_level)}</td>
+                <td>${h(job.industry)}</td>
+                <td>${h(job.remote_option)}</td>
+                <td>${h(job.job_function)}</td>
+                <td>${h(job.application_deadline)}</td>
+                <td>${h(job.created_at)}</td>
+                <td>${h(job.education_level)}</td>
+                <td>${h(job.company_size)}</td>
+                <td>${h(job.languages_required)}</td>
+                <td>${h(job.work_schedule)}</td>
+                <td>${h(job.job_duration)}</td>
+                <td>${h(job.posted_by)}</td>
+                <td>${h(job.hiring_manager_contact)}</td>
+                <td><a href="${escapeHTML(job.company_website)}" target="_blank">${h(job.company_website)}</a></td>
+                <td>${h(job.how_to_apply)}</td>
+                <td>${h(job.benefits)}</td>
+                <td>${h(job.required_skills)}</td>
+                <td>${h(job.description)}</td>
             </tr>`;
+        }
+
+        function filterJobs(term) {
+            const searchTerm = term.trim().toLowerCase();
+            let filtered = allJobs;
+            if (searchTerm) {
+                filtered = allJobs.filter(job =>
+                    Object.values(job).some(val =>
+                        (val || '').toString().toLowerCase().includes(searchTerm)
+                    )
+                );
+            }
+            jobsTableBody.innerHTML = '';
+            if (filtered.length === 0) {
+                noJobs.classList.remove('d-none');
+                return;
+            }
+            noJobs.classList.add('d-none');
+            filtered.forEach(job => {
+                jobsTableBody.innerHTML += renderJobRow(job, searchTerm);
+            });
         }
 
         fetch('jobs.php')
             .then(res => res.json())
             .then(jobs => {
-                jobsTableBody.innerHTML = '';
-                if (!Array.isArray(jobs) || jobs.length === 0) {
-                    noJobs.classList.remove('d-none');
-                    return;
-                }
-                noJobs.classList.add('d-none');
-                jobs.forEach(job => {
-                    jobsTableBody.innerHTML += renderJobRow(job);
-                });
+                allJobs = Array.isArray(jobs) ? jobs : [];
+                filterJobs(searchInput.value || '');
             })
             .catch(() => {
                 jobsTableBody.innerHTML = '';
                 noJobs.textContent = 'Failed to load jobs.';
                 noJobs.classList.remove('d-none');
             });
+
+        searchInput.addEventListener('input', function() {
+            filterJobs(this.value);
+        });
     });
     </script>
 </body>
