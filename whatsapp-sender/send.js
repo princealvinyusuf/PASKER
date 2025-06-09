@@ -8,6 +8,8 @@ const {
 
 const { Boom } = require('@hapi/boom');
 const P = require('pino');
+const fs = require('fs');
+const path = require('path');
 
 async function start() {
     const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys');
@@ -61,13 +63,20 @@ for (const [jid, group] of Object.entries(groups)) {
 
 
 
-            // 🟢 Send message once connected and authenticated
+            // 🟢 Send Excel file once connected and authenticated
             const jid = '120363400882618232@g.us'; // replace with real number
             try {
-                await sock.sendMessage(jid, { text: '⏰ Reminder: Clock in or clock out!' });
-                console.log('✅ Message sent!');
+                const filePath = path.join(__dirname, '../downloads/jobs_backup.xlsx');
+                const buffer = fs.readFileSync(filePath);
+
+                await sock.sendMessage(jid, {
+                    document: buffer,
+                    fileName: 'jobs_backup.xlsx',
+                    mimetype: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                });
+                console.log('✅ Excel file sent!');
             } catch (err) {
-                console.error('❌ Failed to send message:', err);
+                console.error('❌ Failed to send file:', err);
             }
 
             process.exit(0); // Exit after sending
