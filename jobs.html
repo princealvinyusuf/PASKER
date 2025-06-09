@@ -356,7 +356,7 @@
             const deleteBtn = e.target.closest('.delete-btn');
             if (editBtn) {
                 const id = editBtn.getAttribute('data-id');
-                fetch(`jobs.php?page=1&per_page=1&search=&id=${id}`)
+                fetch(`jobs.php?id=${id}`)
                     .then(res => res.json())
                     .then(data => {
                         const job = (data.jobs && data.jobs.length) ? data.jobs[0] : null;

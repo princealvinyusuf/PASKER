@@ -59,6 +59,18 @@ switch ($method) {
             echo json_encode($jobs);
             break;
         }
+        // If id is set, return only that job
+        if (isset($_GET['id']) && intval($_GET['id']) > 0) {
+            $id = intval($_GET['id']);
+            $stmt = $conn->prepare('SELECT * FROM jobs WHERE id=?');
+            $stmt->bind_param('i', $id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $job = $result->fetch_assoc();
+            $stmt->close();
+            echo json_encode(['jobs' => $job ? [$job] : []]);
+            break;
+        }
         // Pagination and search
         $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
         $per_page = isset($_GET['per_page']) ? max(1, intval($_GET['per_page'])) : 50;
