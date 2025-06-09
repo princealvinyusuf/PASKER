@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('XLSX is not defined. Make sure xlsx.full.min.js is loaded before script.js');
                 return;
             }
-            fetch('jobs.php')
+            fetch('jobs.php?export=1')
                 .then(res => res.json())
                 .then(jobs => {
                     if (!Array.isArray(jobs) || jobs.length === 0) {

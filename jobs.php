@@ -15,6 +15,16 @@ $bulk = isset($_GET['bulk']) && $_GET['bulk'] == '1';
 
 switch ($method) {
     case 'GET':
+        // If export=1, return all jobs as a plain array (no pagination, no search)
+        if (isset($_GET['export']) && $_GET['export'] == '1') {
+            $result = $conn->query('SELECT * FROM jobs ORDER BY created_at DESC');
+            $jobs = [];
+            while ($row = $result->fetch_assoc()) {
+                $jobs[] = $row;
+            }
+            echo json_encode($jobs);
+            break;
+        }
         // If counts=1, return only job counts (not paginated, not filtered)
         if (isset($_GET['counts']) && $_GET['counts'] == '1') {
             $total = 0;
