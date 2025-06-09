@@ -48,6 +48,110 @@
     </header>
 
     <main class="container my-4" style="max-width: 100%">
+        <!-- Job Form for Add/Edit -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h2 class="h5 card-title mb-3"><span class="me-2">📝</span>Add / Edit Job</h2>
+                <form id="job-form" aria-label="Job form">
+                    <input type="hidden" id="job-id">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Title</label>
+                            <input type="text" id="title" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Company</label>
+                            <input type="text" id="company_name" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Location</label>
+                            <input type="text" id="location" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Salary</label>
+                            <input type="text" id="salary" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Employment Type</label>
+                            <input type="text" id="employment_type" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Experience Level</label>
+                            <input type="text" id="experience_level" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Industry</label>
+                            <input type="text" id="industry" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Remote Option</label>
+                            <input type="text" id="remote_option" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Job Function</label>
+                            <input type="text" id="job_function" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Application Deadline</label>
+                            <input type="date" id="application_deadline" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Education Level</label>
+                            <input type="text" id="education_level" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Company Size</label>
+                            <input type="text" id="company_size" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Languages Required</label>
+                            <input type="text" id="languages_required" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Work Schedule</label>
+                            <input type="text" id="work_schedule" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Job Duration</label>
+                            <input type="text" id="job_duration" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Posted By</label>
+                            <input type="text" id="posted_by" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Hiring Manager Contact</label>
+                            <input type="text" id="hiring_manager_contact" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Company Website</label>
+                            <input type="text" id="company_website" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">How to Apply</label>
+                            <input type="text" id="how_to_apply" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Benefits</label>
+                            <input type="text" id="benefits" class="form-control">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Required Skills</label>
+                            <textarea id="required_skills" class="form-control"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Description</label>
+                            <textarea id="description" class="form-control"></textarea>
+                        </div>
+                        <div class="col-12 d-flex gap-2 mt-3">
+                            <button type="submit" class="btn btn-primary">Save Job</button>
+                            <button type="button" id="cancel-edit" class="btn btn-secondary" style="display:none;">Cancel Edit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- End Job Form -->
         <div class="row mb-3">
             <div class="col-md-6 mx-auto">
                 <input type="text" id="search-input" class="form-control" placeholder="Search jobs...">
@@ -128,8 +232,8 @@
             }
             return `<tr>
                 <td>
-                    <button class="btn btn-sm btn-primary me-1" title="Edit"><i class="bi bi-pencil"></i></button>
-                    <button class="btn btn-sm btn-danger" title="Delete"><i class="bi bi-trash"></i></button>
+                    <button class="btn btn-sm btn-primary me-1 edit-btn" data-id="${job.id}" title="Edit"><i class="bi bi-pencil"></i></button>
+                    <button class="btn btn-sm btn-danger delete-btn" data-id="${job.id}" title="Delete"><i class="bi bi-trash"></i></button>
                 </td>
                 <td>${h(job.title)}</td>
                 <td>${h(job.company_name)}</td>
@@ -237,6 +341,69 @@
                     fetchJobs(currentPage, currentSearch);
                 }
             }
+        });
+
+        // Add event delegation for edit/delete
+        jobsTableBody.addEventListener('click', function(e) {
+            const editBtn = e.target.closest('.edit-btn');
+            const deleteBtn = e.target.closest('.delete-btn');
+            if (editBtn) {
+                const id = editBtn.getAttribute('data-id');
+                fetch(`jobs.php?page=1&per_page=1&search=&id=${id}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        const job = (data.jobs && data.jobs.length) ? data.jobs[0] : null;
+                        if (job) {
+                            // Fill form fields
+                            Object.keys(job).forEach(key => {
+                                const el = document.getElementById(key);
+                                if (el) el.value = job[key] || '';
+                            });
+                            document.getElementById('job-id').value = job.id;
+                            document.getElementById('cancel-edit').style.display = 'inline-block';
+                        }
+                    });
+            } else if (deleteBtn) {
+                const id = deleteBtn.getAttribute('data-id');
+                if (confirm('Delete this job?')) {
+                    fetch(`jobs.php?id=${id}`, { method: 'DELETE' })
+                        .then(res => res.json())
+                        .then(() => {
+                            // Refresh table
+                            fetchJobs(currentPage, currentSearch);
+                        });
+                }
+            }
+        });
+
+        // Handle form submit for add/edit
+        const jobForm = document.getElementById('job-form');
+        const cancelEditBtn = document.getElementById('cancel-edit');
+        let editing = false;
+        jobForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const data = {};
+            Array.from(jobForm.elements).forEach(el => {
+                if (el.id && el.type !== 'submit' && el.type !== 'button') {
+                    data[el.id] = el.value;
+                }
+            });
+            const method = data['job-id'] ? 'PUT' : 'POST';
+            fetch('jobs.php', {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(() => {
+                jobForm.reset();
+                cancelEditBtn.style.display = 'none';
+                fetchJobs(currentPage, currentSearch);
+            });
+        });
+        cancelEditBtn.addEventListener('click', function() {
+            jobForm.reset();
+            cancelEditBtn.style.display = 'none';
         });
     });
     </script>
