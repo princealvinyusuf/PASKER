@@ -1,7 +1,7 @@
 const XLSX = require('xlsx');
 const fs = require('fs');
 const path = require('path');
-const { default: makeWASocket, useSingleFileAuthState } = require('@adiwajshing/baileys');
+const { default: makeWASocket, useSingleFileAuthState, useSingleFileLegacyAuthState } = require('@adiwajshing/baileys');
 
 console.log(typeof useSingleFileAuthState); // should print 'function'
 
@@ -12,7 +12,7 @@ const workbook = XLSX.readFile(csvPath, { type: 'file', codepage: 65001 });
 XLSX.writeFile(workbook, excelPath);
 
 // Send Excel via WhatsApp
-const { state, saveState } = useSingleFileAuthState('./auth_info_baileys/state.json');
+const { state, saveState } = useSingleFileLegacyAuthState('./auth_info_baileys/state.json');
 async function sendExcelFile(jid, filePath) {
     const sock = makeWASocket({ auth: state });
     sock.ev.on('creds.update', saveState);
