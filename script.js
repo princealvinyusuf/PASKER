@@ -10,7 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function fetchJobs() {
         fetch('jobs.php')
             .then(res => res.json())
-            .then(jobs => {
+            .then(data => {
+                const jobs = Array.isArray(data) ? data : (data.jobs || []);
                 jobsTableBody.innerHTML = '';
                 // Dashboard card elements
                 const totalJobsEl = document.getElementById('total-jobs');
