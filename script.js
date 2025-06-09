@@ -61,6 +61,19 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
+    function fetchJobCounts() {
+        fetch('jobs.php?counts=1')
+            .then(res => res.json())
+            .then(counts => {
+                const totalJobsEl = document.getElementById('total-jobs');
+                const openJobsEl = document.getElementById('open-jobs');
+                const closedJobsEl = document.getElementById('closed-jobs');
+                if (totalJobsEl) totalJobsEl.textContent = counts.total;
+                if (openJobsEl) openJobsEl.textContent = counts.open;
+                if (closedJobsEl) closedJobsEl.textContent = counts.closed;
+            });
+    }
+
     window.editJob = function(job) {
         Object.keys(job).forEach(key => {
             const el = document.getElementById(key);
@@ -202,5 +215,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    fetchJobCounts();
     fetchJobs();
 }); 

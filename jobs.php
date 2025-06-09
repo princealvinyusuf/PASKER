@@ -15,6 +15,29 @@ $bulk = isset($_GET['bulk']) && $_GET['bulk'] == '1';
 
 switch ($method) {
     case 'GET':
+        // If counts=1, return only job counts (not paginated, not filtered)
+        if (isset($_GET['counts']) && $_GET['counts'] == '1') {
+            $total = 0;
+            $open = 0;
+            $closed = 0;
+            $today = date('Y-m-d');
+            $result = $conn->query('SELECT application_deadline FROM jobs');
+            while ($row = $result->fetch_assoc()) {
+                $total++;
+                $deadline = $row['application_deadline'];
+                if ($deadline && $deadline >= $today) {
+                    $open++;
+                } else {
+                    $closed++;
+                }
+            }
+            echo json_encode([
+                'total' => $total,
+                'open' => $open,
+                'closed' => $closed
+            ]);
+            break;
+        }
         // Pagination and search
         $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
         $per_page = isset($_GET['per_page']) ? max(1, intval($_GET['per_page'])) : 50;
