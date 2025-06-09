@@ -14,9 +14,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 const jobs = Array.isArray(data) ? data : (data.jobs || []);
                 jobsTableBody.innerHTML = '';
                 // Dashboard card elements
-                const totalJobsEl = document.getElementById('total-jobs');
-                const openJobsEl = document.getElementById('open-jobs');
-                const closedJobsEl = document.getElementById('closed-jobs');
+                // const totalJobsEl = document.getElementById('total-jobs');
+                // const openJobsEl = document.getElementById('open-jobs');
+                // const closedJobsEl = document.getElementById('closed-jobs');
                 // Count jobs
                 let total = jobs.length;
                 let open = 0;
@@ -54,10 +54,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         closed++;
                     }
                 });
-                // Update dashboard cards
-                if (totalJobsEl) totalJobsEl.textContent = total;
-                if (openJobsEl) openJobsEl.textContent = open;
-                if (closedJobsEl) closedJobsEl.textContent = closed;
+                // Update dashboard cards (REMOVED, now only fetchJobCounts does this)
+                // if (totalJobsEl) totalJobsEl.textContent = total;
+                // if (openJobsEl) openJobsEl.textContent = open;
+                // if (closedJobsEl) closedJobsEl.textContent = closed;
             });
     }
 
