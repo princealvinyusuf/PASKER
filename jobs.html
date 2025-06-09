@@ -48,110 +48,117 @@
     </header>
 
     <main class="container my-4" style="max-width: 100%">
-        <!-- Job Form for Add/Edit -->
-        <div class="card shadow-sm mb-4">
-            <div class="card-body">
-                <h2 class="h5 card-title mb-3"><span class="me-2">📝</span>Add / Edit Job</h2>
-                <form id="job-form" aria-label="Job form">
-                    <input type="hidden" id="job-id">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label">Title</label>
-                            <input type="text" id="title" class="form-control" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Company</label>
-                            <input type="text" id="company_name" class="form-control" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Location</label>
-                            <input type="text" id="location" class="form-control">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Salary</label>
-                            <input type="text" id="salary" class="form-control">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Employment Type</label>
-                            <input type="text" id="employment_type" class="form-control">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Experience Level</label>
-                            <input type="text" id="experience_level" class="form-control">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Industry</label>
-                            <input type="text" id="industry" class="form-control">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Remote Option</label>
-                            <input type="text" id="remote_option" class="form-control">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Job Function</label>
-                            <input type="text" id="job_function" class="form-control">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Application Deadline</label>
-                            <input type="date" id="application_deadline" class="form-control">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Education Level</label>
-                            <input type="text" id="education_level" class="form-control">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Company Size</label>
-                            <input type="text" id="company_size" class="form-control">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Languages Required</label>
-                            <input type="text" id="languages_required" class="form-control">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Work Schedule</label>
-                            <input type="text" id="work_schedule" class="form-control">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Job Duration</label>
-                            <input type="text" id="job_duration" class="form-control">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Posted By</label>
-                            <input type="text" id="posted_by" class="form-control">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Hiring Manager Contact</label>
-                            <input type="text" id="hiring_manager_contact" class="form-control">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Company Website</label>
-                            <input type="text" id="company_website" class="form-control">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">How to Apply</label>
-                            <input type="text" id="how_to_apply" class="form-control">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Benefits</label>
-                            <input type="text" id="benefits" class="form-control">
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label">Required Skills</label>
-                            <textarea id="required_skills" class="form-control"></textarea>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label">Description</label>
-                            <textarea id="description" class="form-control"></textarea>
-                        </div>
-                        <div class="col-12 d-flex gap-2 mt-3">
-                            <button type="submit" class="btn btn-primary">Save Job</button>
-                            <button type="button" id="cancel-edit" class="btn btn-secondary" style="display:none;">Cancel Edit</button>
-                        </div>
+        <!-- Job Edit Modal -->
+        <div class="modal fade" id="editJobModal" tabindex="-1" aria-labelledby="editJobModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editJobModalLabel">Edit Job</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                </form>
+                    <form id="modal-job-form">
+                        <div class="modal-body">
+                            <input type="hidden" id="modal-job-id">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Title</label>
+                                    <input type="text" id="modal-title" class="form-control" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Company</label>
+                                    <input type="text" id="modal-company_name" class="form-control" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Location</label>
+                                    <input type="text" id="modal-location" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Salary</label>
+                                    <input type="text" id="modal-salary" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Employment Type</label>
+                                    <input type="text" id="modal-employment_type" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Experience Level</label>
+                                    <input type="text" id="modal-experience_level" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Industry</label>
+                                    <input type="text" id="modal-industry" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Remote Option</label>
+                                    <input type="text" id="modal-remote_option" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Job Function</label>
+                                    <input type="text" id="modal-job_function" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Application Deadline</label>
+                                    <input type="date" id="modal-application_deadline" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Education Level</label>
+                                    <input type="text" id="modal-education_level" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Company Size</label>
+                                    <input type="text" id="modal-company_size" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Languages Required</label>
+                                    <input type="text" id="modal-languages_required" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Work Schedule</label>
+                                    <input type="text" id="modal-work_schedule" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Job Duration</label>
+                                    <input type="text" id="modal-job_duration" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Posted By</label>
+                                    <input type="text" id="modal-posted_by" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Hiring Manager Contact</label>
+                                    <input type="text" id="modal-hiring_manager_contact" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Company Website</label>
+                                    <input type="text" id="modal-company_website" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">How to Apply</label>
+                                    <input type="text" id="modal-how_to_apply" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Benefits</label>
+                                    <input type="text" id="modal-benefits" class="form-control">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Required Skills</label>
+                                    <textarea id="modal-required_skills" class="form-control"></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Description</label>
+                                    <textarea id="modal-description" class="form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-        <!-- End Job Form -->
+        <!-- End Job Edit Modal -->
         <div class="row mb-3">
             <div class="col-md-6 mx-auto">
                 <input type="text" id="search-input" class="form-control" placeholder="Search jobs...">
@@ -354,13 +361,15 @@
                     .then(data => {
                         const job = (data.jobs && data.jobs.length) ? data.jobs[0] : null;
                         if (job) {
-                            // Fill form fields
+                            // Fill modal form fields
                             Object.keys(job).forEach(key => {
-                                const el = document.getElementById(key);
+                                const el = document.getElementById('modal-' + key);
                                 if (el) el.value = job[key] || '';
                             });
-                            document.getElementById('job-id').value = job.id;
-                            document.getElementById('cancel-edit').style.display = 'inline-block';
+                            document.getElementById('modal-job-id').value = job.id;
+                            // Show modal
+                            const modal = new bootstrap.Modal(document.getElementById('editJobModal'));
+                            modal.show();
                         }
                     });
             } else if (deleteBtn) {
@@ -376,34 +385,29 @@
             }
         });
 
-        // Handle form submit for add/edit
-        const jobForm = document.getElementById('job-form');
-        const cancelEditBtn = document.getElementById('cancel-edit');
-        let editing = false;
-        jobForm.addEventListener('submit', function(e) {
+        // Handle modal form submit for edit
+        const modalJobForm = document.getElementById('modal-job-form');
+        modalJobForm.addEventListener('submit', function(e) {
             e.preventDefault();
             const data = {};
-            Array.from(jobForm.elements).forEach(el => {
+            Array.from(modalJobForm.elements).forEach(el => {
                 if (el.id && el.type !== 'submit' && el.type !== 'button') {
-                    data[el.id] = el.value;
+                    data[el.id.replace('modal-', '')] = el.value;
                 }
             });
-            const method = data['job-id'] ? 'PUT' : 'POST';
+            data['job-id'] = document.getElementById('modal-job-id').value;
             fetch('jobs.php', {
-                method,
+                method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             })
             .then(res => res.json())
             .then(() => {
-                jobForm.reset();
-                cancelEditBtn.style.display = 'none';
+                // Hide modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('editJobModal'));
+                modal.hide();
                 fetchJobs(currentPage, currentSearch);
             });
-        });
-        cancelEditBtn.addEventListener('click', function() {
-            jobForm.reset();
-            cancelEditBtn.style.display = 'none';
         });
     });
     </script>
