@@ -57,6 +57,7 @@
             <table id="jobs-table" class="table table-hover align-middle table-bordered">
                 <thead class="table-light">
                     <tr>
+                        <th>Action</th>
                         <th>Title</th>
                         <th>Company</th>
                         <th>Location</th>
@@ -126,6 +127,10 @@
                 return highlight(escapeHTML(val || ''), searchTerm);
             }
             return `<tr>
+                <td>
+                    <button class="btn btn-sm btn-primary me-1" title="Edit"><i class="bi bi-pencil"></i></button>
+                    <button class="btn btn-sm btn-danger" title="Delete"><i class="bi bi-trash"></i></button>
+                </td>
                 <td>${h(job.title)}</td>
                 <td>${h(job.company_name)}</td>
                 <td>${h(job.location)}</td>
