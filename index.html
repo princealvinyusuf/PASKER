@@ -222,27 +222,6 @@
             </div>
         </div>
         <!-- End Export All Job Data Card -->
-        <!-- Top 5 Latest Jobs Card -->
-        <div class="card shadow-sm mb-4">
-            <div class="card-body">
-                <h2 class="h5 card-title mb-3"><span class="me-2">⭐</span>Top 5 Latest Jobs</h2>
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle" id="top5-jobs-table">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Title</th>
-                                <th>Company</th>
-                                <th>Location</th>
-                                <th>Employment Type</th>
-                                <th>Created At</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <!-- End Top 5 Latest Jobs Card -->
     </main>
     <footer class="text-center py-4 bg-white border-top mt-5">
         <span class="text-muted small">&copy; 2025 Job Admin Dashboard. All rights reserved.</span>
@@ -253,14 +232,14 @@
     <script src="script.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Top 5 Latest Jobs fetch and render
+        // Overwrite jobs table to show only top 5 latest jobs
         fetch('jobs.php?top=5')
             .then(res => res.json())
             .then(jobs => {
-                const tbody = document.querySelector('#top5-jobs-table tbody');
+                const tbody = document.querySelector('#jobs-table tbody');
                 tbody.innerHTML = '';
                 if (!Array.isArray(jobs) || jobs.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No jobs found.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="9" class="text-center text-muted">No jobs found.</td></tr>';
                     return;
                 }
                 jobs.forEach(job => {
@@ -270,7 +249,14 @@
                         <td>${job.company_name || ''}</td>
                         <td>${job.location || ''}</td>
                         <td>${job.employment_type || ''}</td>
+                        <td>${job.experience_level || ''}</td>
+                        <td>${job.salary || ''}</td>
+                        <td>${job.application_deadline || ''}</td>
                         <td>${job.created_at || ''}</td>
+                        <td>
+                            <button class="btn btn-outline-primary btn-sm me-1" onclick='editJob(${JSON.stringify(job)})'><i class="bi bi-pencil"></i> Edit</button>
+                            <button class="btn btn-outline-danger btn-sm" onclick="deleteJob(${job.id})"><i class="bi bi-trash"></i> Delete</button>
+                        </td>
                     `;
                     tbody.appendChild(tr);
                 });
