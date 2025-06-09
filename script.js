@@ -216,5 +216,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     fetchJobCounts();
-    fetchJobs();
+    if (!window.location.pathname.endsWith('index.html')) {
+        fetchJobs();
+    }
 }); 
