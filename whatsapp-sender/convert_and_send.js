@@ -3,6 +3,8 @@ const fs = require('fs');
 const path = require('path');
 const { default: makeWASocket, useSingleFileAuthState } = require('@adiwajshing/baileys');
 
+console.log(typeof useSingleFileAuthState); // should print 'function'
+
 // Convert CSV to Excel
 const csvPath = path.join(__dirname, '../downloads/jobs_backup.csv');
 const excelPath = path.join(__dirname, '../downloads/jobs_backup.xlsx');
