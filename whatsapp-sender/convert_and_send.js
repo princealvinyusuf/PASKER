@@ -14,13 +14,17 @@ const { state, saveState } = useSingleFileAuthState('./auth_info_baileys/state.j
 async function sendExcelFile(jid, filePath) {
     const sock = makeWASocket({ auth: state });
     sock.ev.on('creds.update', saveState);
-    await sock.waitForConnectionUpdate({ isOnline: true });
+
+    // Wait for connection
+    await new Promise(resolve => setTimeout(resolve, 5000));
+
     const buffer = fs.readFileSync(filePath);
     await sock.sendMessage(jid, {
         document: buffer,
         fileName: 'jobs_backup.xlsx',
         mimetype: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     });
+
     console.log('File sent!');
     process.exit(0);
 }
