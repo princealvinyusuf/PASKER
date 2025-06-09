@@ -86,6 +86,8 @@
             </table>
         </div>
         <div id="no-jobs" class="alert alert-info text-center d-none">No jobs found.</div>
+        <div id="pagination-container" class="d-flex justify-content-center mt-4"></div>
+        <div id="jobs-info" class="text-center text-muted mt-2"></div>
     </main>
 
     <footer class="text-center py-4 bg-white border-top mt-5">
@@ -98,7 +100,11 @@
         const jobsTableBody = document.getElementById('jobs-table-body');
         const noJobs = document.getElementById('no-jobs');
         const searchInput = document.getElementById('search-input');
-        let allJobs = [];
+        const paginationContainer = document.getElementById('pagination-container');
+        const jobsInfo = document.getElementById('jobs-info');
+        let currentPage = 1;
+        let currentSearch = '';
+        const perPage = 50;
 
         function escapeHTML(str) {
             return str ? str.replace(/[&<>"']/g, function(tag) {
@@ -116,7 +122,6 @@
         }
 
         function renderJobRow(job, searchTerm = '') {
-            // For each field, highlight the search term if present
             function h(val) {
                 return highlight(escapeHTML(val || ''), searchTerm);
             }
@@ -147,41 +152,86 @@
             </tr>`;
         }
 
-        function filterJobs(term) {
-            const searchTerm = term.trim().toLowerCase();
-            let filtered = allJobs;
-            if (searchTerm) {
-                filtered = allJobs.filter(job =>
-                    Object.values(job).some(val =>
-                        (val || '').toString().toLowerCase().includes(searchTerm)
-                    )
-                );
+        function renderPagination(total, page, perPage) {
+            const totalPages = Math.ceil(total / perPage);
+            let html = '';
+            if (totalPages <= 1) return '';
+            html += `<nav aria-label="Job pagination"><ul class="pagination">`;
+            // Previous
+            html += `<li class="page-item${page === 1 ? ' disabled' : ''}"><a class="page-link" href="#" data-page="${page - 1}">Previous</a></li>`;
+            // Page numbers (show up to 5 pages around current)
+            let start = Math.max(1, page - 2);
+            let end = Math.min(totalPages, page + 2);
+            if (page <= 3) end = Math.min(5, totalPages);
+            if (page >= totalPages - 2) start = Math.max(1, totalPages - 4);
+            for (let i = start; i <= end; i++) {
+                html += `<li class="page-item${i === page ? ' active' : ''}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
             }
-            jobsTableBody.innerHTML = '';
-            if (filtered.length === 0) {
-                noJobs.classList.remove('d-none');
-                return;
-            }
-            noJobs.classList.add('d-none');
-            filtered.forEach(job => {
-                jobsTableBody.innerHTML += renderJobRow(job, searchTerm);
-            });
+            // Next
+            html += `<li class="page-item${page === totalPages ? ' disabled' : ''}"><a class="page-link" href="#" data-page="${page + 1}">Next</a></li>`;
+            html += `</ul></nav>`;
+            return html;
         }
 
-        fetch('jobs.php')
-            .then(res => res.json())
-            .then(jobs => {
-                allJobs = Array.isArray(jobs) ? jobs : [];
-                filterJobs(searchInput.value || '');
-            })
-            .catch(() => {
-                jobsTableBody.innerHTML = '';
-                noJobs.textContent = 'Failed to load jobs.';
-                noJobs.classList.remove('d-none');
-            });
+        function fetchJobs(page = 1, search = '') {
+            jobsTableBody.innerHTML = '<tr><td colspan="24" class="text-center">Loading...</td></tr>';
+            noJobs.classList.add('d-none');
+            jobsInfo.textContent = '';
+            fetch(`jobs.php?page=${page}&per_page=${perPage}&search=${encodeURIComponent(search)}`)
+                .then(res => res.json())
+                .then(data => {
+                    const jobs = data.jobs || [];
+                    const total = data.total || 0;
+                    const currentPage = data.page || 1;
+                    jobsTableBody.innerHTML = '';
+                    if (jobs.length === 0) {
+                        noJobs.classList.remove('d-none');
+                        paginationContainer.innerHTML = '';
+                        jobsInfo.textContent = '';
+                        return;
+                    }
+                    noJobs.classList.add('d-none');
+                    jobs.forEach(job => {
+                        jobsTableBody.innerHTML += renderJobRow(job, search);
+                    });
+                    paginationContainer.innerHTML = renderPagination(total, currentPage, perPage);
+                    const start = (currentPage - 1) * perPage + 1;
+                    const end = Math.min(start + jobs.length - 1, total);
+                    jobsInfo.textContent = `Showing ${start}-${end} of ${total} jobs`;
+                })
+                .catch(() => {
+                    jobsTableBody.innerHTML = '';
+                    noJobs.textContent = 'Failed to load jobs.';
+                    noJobs.classList.remove('d-none');
+                    paginationContainer.innerHTML = '';
+                    jobsInfo.textContent = '';
+                });
+        }
 
+        // Initial fetch
+        fetchJobs(currentPage, currentSearch);
+
+        // Search input event
+        let searchTimeout;
         searchInput.addEventListener('input', function() {
-            filterJobs(this.value);
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                currentSearch = this.value;
+                currentPage = 1;
+                fetchJobs(currentPage, currentSearch);
+            }, 300);
+        });
+
+        // Pagination click event
+        paginationContainer.addEventListener('click', function(e) {
+            if (e.target.tagName === 'A' && e.target.dataset.page) {
+                e.preventDefault();
+                const page = parseInt(e.target.dataset.page, 10);
+                if (!isNaN(page) && page > 0) {
+                    currentPage = page;
+                    fetchJobs(currentPage, currentSearch);
+                }
+            }
         });
     });
     </script>

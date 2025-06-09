@@ -15,12 +15,57 @@ $bulk = isset($_GET['bulk']) && $_GET['bulk'] == '1';
 
 switch ($method) {
     case 'GET':
-        $result = $conn->query('SELECT * FROM jobs ORDER BY created_at DESC');
+        // Pagination and search
+        $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+        $per_page = isset($_GET['per_page']) ? max(1, intval($_GET['per_page'])) : 50;
+        $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+        $where = '';
+        $params = [];
+        $types = '';
+        if ($search !== '') {
+            $search_like = '%' . $search . '%';
+            $where_clauses = [];
+            foreach ($fields as $f) {
+                $where_clauses[] = "$f LIKE ?";
+                $params[] = $search_like;
+                $types .= 's';
+            }
+            $where = 'WHERE ' . implode(' OR ', $where_clauses);
+        }
+        // Count total
+        $count_sql = "SELECT COUNT(*) as total FROM jobs $where";
+        $count_stmt = $conn->prepare($count_sql);
+        if ($where !== '') {
+            $count_stmt->bind_param($types, ...$params);
+        }
+        $count_stmt->execute();
+        $count_result = $count_stmt->get_result();
+        $total = $count_result->fetch_assoc()['total'] ?? 0;
+        $count_stmt->close();
+        // Fetch jobs for page
+        $offset = ($page - 1) * $per_page;
+        $sql = "SELECT * FROM jobs $where ORDER BY created_at DESC LIMIT ? OFFSET ?";
+        $stmt = $conn->prepare($sql);
+        if ($where !== '') {
+            $bind_types = $types . 'ii';
+            $bind_params = array_merge($params, [$per_page, $offset]);
+            $stmt->bind_param($bind_types, ...$bind_params);
+        } else {
+            $stmt->bind_param('ii', $per_page, $offset);
+        }
+        $stmt->execute();
+        $result = $stmt->get_result();
         $jobs = [];
         while ($row = $result->fetch_assoc()) {
             $jobs[] = $row;
         }
-        echo json_encode($jobs);
+        $stmt->close();
+        echo json_encode([
+            'jobs' => $jobs,
+            'total' => intval($total),
+            'page' => $page,
+            'per_page' => $per_page
+        ]);
         break;
     case 'POST':
         if ($bulk) {
