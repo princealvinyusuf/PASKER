@@ -8,7 +8,7 @@ require 'db.php';
 $method = $_SERVER['REQUEST_METHOD'];
 
 $fields = [
-    'title', 'description', 'location', 'salary', 'company_name', 'employment_type', 'experience_level', 'industry', 'remote_option', 'job_function', 'required_skills', 'education_level', 'application_deadline', 'benefits', 'company_website', 'how_to_apply', 'company_size', 'hiring_manager_contact', 'work_schedule', 'job_duration', 'languages_required', 'posted_by'
+    'uid', 'title', 'description', 'location', 'salary', 'company_name', 'employment_type', 'experience_level', 'industry', 'remote_option', 'job_function', 'required_skills', 'education_level', 'application_deadline', 'benefits', 'company_website', 'how_to_apply', 'company_size', 'hiring_manager_contact', 'work_schedule', 'job_duration', 'languages_required', 'posted_by'
 ];
 
 $bulk = isset($_GET['bulk']) && $_GET['bulk'] == '1';
@@ -87,6 +87,12 @@ switch ($method) {
                 $types .= 's';
             }
             $where = 'WHERE ' . implode(' OR ', $where_clauses);
+        }
+        // Filter by uid if provided
+        if (isset($_GET['uid']) && $_GET['uid'] !== '') {
+            $where = $where ? $where . ' AND uid=?' : 'WHERE uid=?';
+            $params[] = $_GET['uid'];
+            $types .= 's';
         }
         // Count total
         $count_sql = "SELECT COUNT(*) as total FROM jobs $where";

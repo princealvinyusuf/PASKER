@@ -8,7 +8,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const bulkStatus = document.getElementById('bulk-upload-status');
 
     function fetchJobs() {
-        fetch('jobs.php')
+        let searchParam = '';
+        const searchInput = document.getElementById('search-input');
+        if (searchInput && searchInput.value.trim() !== '') {
+            searchParam = '&search=' + encodeURIComponent(searchInput.value.trim());
+        }
+        const uidInput = document.getElementById('uid');
+        if (uidInput && uidInput.value.trim() !== '') {
+            searchParam += '&uid=' + encodeURIComponent(uidInput.value.trim());
+        }
+        fetch('jobs.php?' + searchParam.replace(/^&/, ''))
             .then(res => res.json())
             .then(data => {
                 const jobs = Array.isArray(data) ? data : (data.jobs || []);
@@ -26,6 +35,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Render table row
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
+                        <td>
+                            <button class="btn btn-outline-primary btn-sm me-1" onclick='editJob(${JSON.stringify(job)})'><i class="bi bi-pencil"></i> Edit</button>
+                            <button class="btn btn-outline-danger btn-sm" onclick="deleteJob(${job.id})"><i class="bi bi-trash"></i> Delete</button>
+                        </td>
+                        <td>${job.uid || ''}</td>
                         <td>${job.title || ''}</td>
                         <td>${job.company_name || ''}</td>
                         <td>${job.location || ''}</td>
@@ -34,10 +48,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         <td>${job.salary || ''}</td>
                         <td>${job.application_deadline || ''}</td>
                         <td>${job.created_at || ''}</td>
-                        <td>
-                            <button class="btn btn-outline-primary btn-sm me-1" onclick='editJob(${JSON.stringify(job)})'><i class="bi bi-pencil"></i> Edit</button>
-                            <button class="btn btn-outline-danger btn-sm" onclick="deleteJob(${job.id})"><i class="bi bi-trash"></i> Delete</button>
-                        </td>
                     `;
                     jobsTableBody.appendChild(tr);
                     // Count open/closed

@@ -61,6 +61,10 @@
                             <input type="hidden" id="modal-job-id">
                             <div class="row g-3">
                                 <div class="col-md-6">
+                                    <label class="form-label">UID</label>
+                                    <input type="text" id="modal-uid" class="form-control">
+                                </div>
+                                <div class="col-md-6">
                                     <label class="form-label">Title</label>
                                     <input type="text" id="modal-title" class="form-control" required>
                                 </div>
@@ -169,6 +173,7 @@
                 <thead class="table-light">
                     <tr>
                         <th>Action</th>
+                        <th>UID</th>
                         <th>Title</th>
                         <th>Company</th>
                         <th>Location</th>
@@ -242,6 +247,7 @@
                     <button class="btn btn-sm btn-primary me-1 edit-btn" data-id="${job.id}" title="Edit"><i class="bi bi-pencil"></i></button>
                     <button class="btn btn-sm btn-danger delete-btn" data-id="${job.id}" title="Delete"><i class="bi bi-trash"></i></button>
                 </td>
+                <td>${h(job.uid)}</td>
                 <td>${h(job.title)}</td>
                 <td>${h(job.company_name)}</td>
                 <td>${h(job.location)}</td>
