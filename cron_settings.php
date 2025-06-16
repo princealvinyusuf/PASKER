@@ -116,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Save to crontab
     $tmpFile = '/tmp/cron_update.txt';
     file_put_contents($tmpFile, implode("\n", $newCrontab) . "\n");
-    shell_exec("crontab $tmpFile");
+    shell_exec("sudo -u bjalex081999 /usr/bin/crontab $tmpFile");
     header("Location: ".$_SERVER['PHP_SELF']);
     exit;
 }
