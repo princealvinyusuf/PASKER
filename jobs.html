@@ -167,7 +167,29 @@
         </div>
         <!-- End Job Edit Modal -->
         <div class="row mb-3">
-            <div class="col-md-6 mx-auto">
+            <div class="col-md-3">
+                <select id="filter-year" class="form-select">
+                    <option value="">All Years</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select id="filter-month" class="form-select">
+                    <option value="">All Months</option>
+                    <option value="01">January</option>
+                    <option value="02">February</option>
+                    <option value="03">March</option>
+                    <option value="04">April</option>
+                    <option value="05">May</option>
+                    <option value="06">June</option>
+                    <option value="07">July</option>
+                    <option value="08">August</option>
+                    <option value="09">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                </select>
+            </div>
+            <div class="col-md-6">
                 <input type="text" id="search-input" class="form-control" placeholder="Search jobs...">
             </div>
         </div>
@@ -225,6 +247,8 @@
         let currentPage = 1;
         let currentSearch = '';
         const perPage = 50;
+        const filterYear = document.getElementById('filter-year');
+        const filterMonth = document.getElementById('filter-month');
 
         function escapeHTML(str) {
             return str ? str.replace(/[&<>"']/g, function(tag) {
@@ -302,7 +326,12 @@
             jobsTableBody.innerHTML = '<tr><td colspan="24" class="text-center">Loading...</td></tr>';
             noJobs.classList.add('d-none');
             jobsInfo.textContent = '';
-            fetch(`jobs.php?page=${page}&per_page=${perPage}&search=${encodeURIComponent(search)}`)
+            const year = filterYear.value;
+            const month = filterMonth.value;
+            let url = `jobs.php?page=${page}&per_page=${perPage}&search=${encodeURIComponent(search)}`;
+            if (year) url += `&year=${year}`;
+            if (month) url += `&month=${month}`;
+            fetch(url)
                 .then(res => res.json())
                 .then(data => {
                     const jobs = data.jobs || [];
@@ -332,6 +361,24 @@
                     jobsInfo.textContent = '';
                 });
         }
+
+        // Populate year dropdown (from 2015 to current year)
+        const currentYear = new Date().getFullYear();
+        for (let y = currentYear; y >= 2015; y--) {
+            const opt = document.createElement('option');
+            opt.value = y;
+            opt.textContent = y;
+            filterYear.appendChild(opt);
+        }
+        // Filter change events
+        filterYear.addEventListener('change', function() {
+            currentPage = 1;
+            fetchJobs(currentPage, currentSearch);
+        });
+        filterMonth.addEventListener('change', function() {
+            currentPage = 1;
+            fetchJobs(currentPage, currentSearch);
+        });
 
         // Initial fetch
         fetchJobs(currentPage, currentSearch);

@@ -94,6 +94,18 @@ switch ($method) {
             $params[] = $_GET['uid'];
             $types .= 's';
         }
+        // Filter by year/month if provided (on application_deadline or created_at)
+        $dateField = 'application_deadline';
+        if (isset($_GET['year']) && $_GET['year'] !== '') {
+            $where = $where ? $where . " AND YEAR($dateField)=?" : "WHERE YEAR($dateField)=?";
+            $params[] = $_GET['year'];
+            $types .= 'i';
+        }
+        if (isset($_GET['month']) && $_GET['month'] !== '') {
+            $where = $where ? $where . " AND MONTH($dateField)=?" : "WHERE MONTH($dateField)=?";
+            $params[] = $_GET['month'];
+            $types .= 'i';
+        }
         // Count total
         $count_sql = "SELECT COUNT(*) as total FROM jobs $where";
         $count_stmt = $conn->prepare($count_sql);
