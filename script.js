@@ -229,4 +229,28 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!window.location.pathname.endsWith('index.html')) {
         fetchJobs();
     }
+
+    // Inject shared navigation bar
+    function loadNavbar(activePage) {
+        fetch('navbar.html')
+            .then(res => res.text())
+            .then(html => {
+                const navDiv = document.getElementById('navbar-placeholder');
+                if (navDiv) {
+                    navDiv.innerHTML = html;
+                    // Set active class
+                    if (activePage) {
+                        const navId = {
+                            'index.html': 'nav-dashboard',
+                            'jobs.html': 'nav-jobs',
+                            'cron_settings.php': 'nav-settings'
+                        }[activePage];
+                        if (navId) {
+                            document.getElementById(navId)?.classList.add('active');
+                            document.getElementById(navId)?.setAttribute('aria-current', 'page');
+                        }
+                    }
+                }
+            });
+    }
 }); 
