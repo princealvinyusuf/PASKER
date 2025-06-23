@@ -213,29 +213,7 @@ function filter_csv_makaryo($inputPath, $outputPath, &$debug = null, $uppercase 
     </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="index.html"><i class="bi bi-briefcase me-2"></i>Job Admin</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.html">Dashboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="jobs.html">Jobs</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="cron_settings.php">Setting</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    <!-- End Navigation Bar -->
+    <div id="navbar-placeholder"></div>
     <div class="big-card">
         <div class="section-title">Cleansing Makaryo <span class="coming-soon"></span></div>
         <form method="post" enctype="multipart/form-data">
@@ -351,5 +329,11 @@ function filter_csv_makaryo($inputPath, $outputPath, &$debug = null, $uppercase 
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        loadNavbar('cleansing_makaryo.php');
+      });
+    </script>
 </body>
 </html> 
