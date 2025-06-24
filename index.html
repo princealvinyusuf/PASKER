@@ -17,7 +17,38 @@
     </style>
 </head>
 <body class="bg-light">
-    <div id="navbar-placeholder"></div>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="index.html"><i class="bi bi-briefcase me-2"></i>Job Admin</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="index.html">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="jobs.html">Jobs</a>
+                    </li>
+<li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="cleansingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Cleansing
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="cleansingDropdown">
+                            <li><a class="dropdown-item" href="cleansing_snaphunt.php">Snaphunt</a></li>
+                            <li><a class="dropdown-item" href="cleansing_makaryo.php">Makaryo</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="cron_settings.php">Setting</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- End Navigation Bar -->
     <header class="bg-primary bg-gradient py-4 mb-4 text-white text-center">
         <span class="fs-1 d-block mb-2">💼</span>
         <h1 class="h3 mb-1">Job Admin Dashboard</h1>
@@ -215,11 +246,6 @@
     <!-- SheetJS for Excel parsing -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="script.js"></script>
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        loadNavbar('index.html');
-      });
-    </script>
     <!-- Job Edit Modal -->
     <div class="modal fade" id="editJobModal" tabindex="-1" aria-labelledby="editJobModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
