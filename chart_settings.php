@@ -73,7 +73,10 @@ if (isset($_GET['edit'])) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chart Settings</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
@@ -204,7 +207,8 @@ if (isset($_GET['edit'])) {
         }
     </style>
 </head>
-<body>
+<body class="bg-light">
+    <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
             <a class="navbar-brand" href="index.html"><i class="bi bi-briefcase me-2"></i>Job Admin</a>
@@ -241,6 +245,7 @@ if (isset($_GET['edit'])) {
             </div>
         </div>
     </nav>
+    <!-- End Navigation Bar -->
     <div class="container">
         <h1>Chart Settings</h1>
         <h2><?php echo $edit_chart ? 'Edit Chart' : 'Add New Chart'; ?></h2>

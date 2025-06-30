@@ -92,11 +92,22 @@ function filter_csv_makaryo($inputPath, $outputPath, &$debug = null, $uppercase 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Cleansing Makaryo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cleansing Makaryo</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
+        .navbar-brand {
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .bulk-upload-box {
+            border: 2px dotted #0d6efd;
+            border-radius: 10px;
+            padding: 18px 18px 10px 18px;
+            margin-bottom: 1.5rem;
+            background: #f8faff;
+        }
         body { font-family: Arial, sans-serif; margin: 0; background: #f4f6f8; }
         .big-card {
             border: 3px dotted #1976d2;
@@ -212,7 +223,7 @@ function filter_csv_makaryo($inputPath, $outputPath, &$debug = null, $uppercase 
         }
     </style>
 </head>
-<body>
+<body class="bg-light">
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
