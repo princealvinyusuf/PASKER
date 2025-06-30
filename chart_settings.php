@@ -9,6 +9,8 @@ if ($conn->connect_error) {
     die('Connection failed: ' . $conn->connect_error);
 }
 
+$error = '';
+
 // Handle Create
 if (isset($_POST['add'])) {
     $title = $conn->real_escape_string($_POST['title']);
@@ -16,10 +18,16 @@ if (isset($_POST['add'])) {
     $chart_type = $conn->real_escape_string($_POST['chart_type']);
     $data_json = $conn->real_escape_string($_POST['data_json']);
     $order = intval($_POST['order']);
-    $sql = "INSERT INTO charts (title, description, chart_type, data_json, `order`) VALUES ('$title', '$description', '$chart_type', '$data_json', $order)";
-    $conn->query($sql);
-    header('Location: chart_settings.php');
-    exit();
+    // Check for duplicate order
+    $check = $conn->query("SELECT id FROM charts WHERE `order` = $order");
+    if ($check && $check->num_rows > 0) {
+        $error = 'Order value already exists. Please choose a different order.';
+    } else {
+        $sql = "INSERT INTO charts (title, description, chart_type, data_json, `order`) VALUES ('$title', '$description', '$chart_type', '$data_json', $order)";
+        $conn->query($sql);
+        header('Location: chart_settings.php');
+        exit();
+    }
 }
 
 // Handle Update
@@ -30,10 +38,16 @@ if (isset($_POST['update'])) {
     $chart_type = $conn->real_escape_string($_POST['chart_type']);
     $data_json = $conn->real_escape_string($_POST['data_json']);
     $order = intval($_POST['order']);
-    $sql = "UPDATE charts SET title='$title', description='$description', chart_type='$chart_type', data_json='$data_json', `order`=$order WHERE id=$id";
-    $conn->query($sql);
-    header('Location: chart_settings.php');
-    exit();
+    // Check for duplicate order (exclude current row)
+    $check = $conn->query("SELECT id FROM charts WHERE `order` = $order AND id != $id");
+    if ($check && $check->num_rows > 0) {
+        $error = 'Order value already exists. Please choose a different order.';
+    } else {
+        $sql = "UPDATE charts SET title='$title', description='$description', chart_type='$chart_type', data_json='$data_json', `order`=$order WHERE id=$id";
+        $conn->query($sql);
+        header('Location: chart_settings.php');
+        exit();
+    }
 }
 
 // Handle Delete
@@ -66,11 +80,15 @@ if (isset($_GET['edit'])) {
         th { background: #eee; }
         form { margin-bottom: 20px; }
         .actions a { margin-right: 8px; }
+        .error { color: red; margin-bottom: 10px; }
     </style>
 </head>
 <body>
     <h1>Chart Settings</h1>
     <h2><?php echo $edit_chart ? 'Edit Chart' : 'Add New Chart'; ?></h2>
+    <?php if ($error): ?>
+        <div class="error"><?php echo htmlspecialchars($error); ?></div>
+    <?php endif; ?>
     <form method="post">
         <?php if ($edit_chart): ?>
             <input type="hidden" name="id" value="<?php echo $edit_chart['id']; ?>">
