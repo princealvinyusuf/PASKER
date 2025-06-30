@@ -69,60 +69,184 @@ $news = $conn->query("SELECT * FROM news ORDER BY id DESC");
     <meta charset="UTF-8">
     <title>News Settings</title>
     <style>
-        table { border-collapse: collapse; width: 100%; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-        th { background: #f2f2f2; }
-        form { margin-bottom: 20px; }
-        input, textarea { width: 100%; }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f6f8fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 24px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        h2, h3 {
+            text-align: center;
+            color: #222;
+        }
+        form {
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 24px 20px 16px 20px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        label {
+            display: block;
+            margin-bottom: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+        input[type="text"], input[type="date"], textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1rem;
+            margin-top: 4px;
+            background: #fff;
+            transition: border 0.2s;
+        }
+        input[type="text"]:focus, input[type="date"]:focus, textarea:focus {
+            border: 1.5px solid #2563eb;
+            outline: none;
+        }
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        .btn {
+            display: inline-block;
+            padding: 8px 22px;
+            border: none;
+            border-radius: 6px;
+            background: #2563eb;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            margin-right: 8px;
+            margin-top: 8px;
+            transition: background 0.2s;
+            text-decoration: none;
+        }
+        .btn:hover {
+            background: #1d4ed8;
+        }
+        .btn.cancel {
+            background: #e5e7eb;
+            color: #222;
+        }
+        .btn.cancel:hover {
+            background: #d1d5db;
+        }
+        .btn.delete {
+            background: #ef4444;
+        }
+        .btn.delete:hover {
+            background: #b91c1c;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+        th, td {
+            padding: 12px 10px;
+            text-align: left;
+        }
+        th {
+            background: #f1f5f9;
+            color: #222;
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background: #f9fafb;
+        }
+        tr:hover {
+            background: #e0e7ef;
+        }
+        td {
+            vertical-align: top;
+        }
+        .actions a {
+            margin-right: 8px;
+        }
+        @media (max-width: 700px) {
+            .container { padding: 8px; }
+            form { padding: 12px 6px; }
+            th, td { font-size: 0.95rem; padding: 8px 4px; }
+        }
     </style>
 </head>
 <body>
-    <h2>News Settings</h2>
-    <h3><?php echo $edit_news ? 'Edit News' : 'Add News'; ?></h3>
-    <form method="post">
-        <?php if ($edit_news): ?>
-            <input type="hidden" name="id" value="<?php echo $edit_news['id']; ?>">
-        <?php endif; ?>
-        <label>Title:<br><input type="text" name="title" required value="<?php echo $edit_news['title'] ?? ''; ?>"></label><br><br>
-        <label>Content:<br><textarea name="content" required><?php echo $edit_news['content'] ?? ''; ?></textarea></label><br><br>
-        <label>Image URL:<br><input type="text" name="image_url" value="<?php echo $edit_news['image_url'] ?? ''; ?>"></label><br><br>
-        <label>Date:<br><input type="date" name="date" required value="<?php echo $edit_news['date'] ?? ''; ?>"></label><br><br>
-        <label>Author:<br><input type="text" name="author" value="<?php echo $edit_news['author'] ?? ''; ?>"></label><br><br>
-        <button type="submit" name="<?php echo $edit_news ? 'update' : 'add'; ?>"><?php echo $edit_news ? 'Update' : 'Add'; ?></button>
-        <?php if ($edit_news): ?>
-            <a href="news_settings.php">Cancel</a>
-        <?php endif; ?>
-    </form>
-    <h3>All News</h3>
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Content</th>
-            <th>Image URL</th>
-            <th>Date</th>
-            <th>Author</th>
-            <th>Created At</th>
-            <th>Updated At</th>
-            <th>Actions</th>
-        </tr>
-        <?php while ($row = $news->fetch_assoc()): ?>
-        <tr>
-            <td><?php echo $row['id']; ?></td>
-            <td><?php echo htmlspecialchars($row['title']); ?></td>
-            <td><?php echo nl2br(htmlspecialchars($row['content'])); ?></td>
-            <td><?php echo htmlspecialchars($row['image_url']); ?></td>
-            <td><?php echo $row['date']; ?></td>
-            <td><?php echo htmlspecialchars($row['author']); ?></td>
-            <td><?php echo $row['created_at']; ?></td>
-            <td><?php echo $row['updated_at']; ?></td>
-            <td>
-                <a href="news_settings.php?edit=<?php echo $row['id']; ?>">Edit</a> |
-                <a href="news_settings.php?delete=<?php echo $row['id']; ?>" onclick="return confirm('Delete this news?');">Delete</a>
-            </td>
-        </tr>
-        <?php endwhile; ?>
-    </table>
+    <div class="container">
+        <h2>News Settings</h2>
+        <h3><?php echo $edit_news ? 'Edit News' : 'Add News'; ?></h3>
+        <form method="post">
+            <?php if ($edit_news): ?>
+                <input type="hidden" name="id" value="<?php echo $edit_news['id']; ?>">
+            <?php endif; ?>
+            <label>Title:
+                <input type="text" name="title" required value="<?php echo $edit_news['title'] ?? ''; ?>">
+            </label>
+            <label>Content:
+                <textarea name="content" required><?php echo $edit_news['content'] ?? ''; ?></textarea>
+            </label>
+            <label>Image URL:
+                <input type="text" name="image_url" value="<?php echo $edit_news['image_url'] ?? ''; ?>">
+            </label>
+            <label>Date:
+                <input type="date" name="date" required value="<?php echo $edit_news['date'] ?? ''; ?>">
+            </label>
+            <label>Author:
+                <input type="text" name="author" value="<?php echo $edit_news['author'] ?? ''; ?>">
+            </label>
+            <button type="submit" class="btn" name="<?php echo $edit_news ? 'update' : 'add'; ?>"><?php echo $edit_news ? 'Update' : 'Add'; ?></button>
+            <?php if ($edit_news): ?>
+                <a href="news_settings.php" class="btn cancel">Cancel</a>
+            <?php endif; ?>
+        </form>
+        <h3>All News</h3>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Content</th>
+                <th>Image URL</th>
+                <th>Date</th>
+                <th>Author</th>
+                <th>Created At</th>
+                <th>Updated At</th>
+                <th>Actions</th>
+            </tr>
+            <?php while ($row = $news->fetch_assoc()): ?>
+            <tr>
+                <td><?php echo $row['id']; ?></td>
+                <td><?php echo htmlspecialchars($row['title']); ?></td>
+                <td><?php echo nl2br(htmlspecialchars($row['content'])); ?></td>
+                <td><?php echo htmlspecialchars($row['image_url']); ?></td>
+                <td><?php echo $row['date']; ?></td>
+                <td><?php echo htmlspecialchars($row['author']); ?></td>
+                <td><?php echo $row['created_at']; ?></td>
+                <td><?php echo $row['updated_at']; ?></td>
+                <td class="actions">
+                    <a href="news_settings.php?edit=<?php echo $row['id']; ?>" class="btn">Edit</a>
+                    <a href="news_settings.php?delete=<?php echo $row['id']; ?>" class="btn delete" onclick="return confirm('Delete this news?');">Delete</a>
+                </td>
+            </tr>
+            <?php endwhile; ?>
+        </table>
+    </div>
 </body>
 </html>
 <?php $conn->close(); ?> 
