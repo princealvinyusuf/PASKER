@@ -228,8 +228,23 @@ function filter_csv_makaryo($inputPath, $outputPath, &$debug = null, $uppercase 
                     <li class="nav-item">
                         <a class="nav-link" href="jobs.html">Jobs</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="cron_settings.php">Setting</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="cleansingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Cleansing
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="cleansingDropdown">
+                            <li><a class="dropdown-item" href="cleansing_snaphunt.php">Snaphunt</a></li>
+                            <li><a class="dropdown-item" href="cleansing_makaryo.php">Makaryo</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="settingsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Settings
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="settingsDropdown">
+                            <li><a class="dropdown-item" href="chart_settings.php">Chart Settings</a></li>
+                            <li><a class="dropdown-item" href="cron_settings.php">Other Settings</a></li>
+                        </ul>
                     </li>
                 </ul>
             </div>
