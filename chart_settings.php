@@ -75,63 +75,198 @@ if (isset($_GET['edit'])) {
     <meta charset="UTF-8">
     <title>Chart Settings</title>
     <style>
-        table { border-collapse: collapse; width: 100%; }
-        th, td { border: 1px solid #ccc; padding: 8px; }
-        th { background: #eee; }
-        form { margin-bottom: 20px; }
-        .actions a { margin-right: 8px; }
-        .error { color: red; margin-bottom: 10px; }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f6f8fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 950px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            padding: 32px 28px 28px 28px;
+        }
+        h1 {
+            text-align: center;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+        h2 {
+            color: #4a5568;
+            margin-top: 0;
+            margin-bottom: 18px;
+            font-size: 1.2em;
+        }
+        .error {
+            color: #fff;
+            background: #e53e3e;
+            padding: 10px 18px;
+            border-radius: 6px;
+            margin-bottom: 18px;
+            font-size: 1em;
+        }
+        form {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 22px 20px 18px 20px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+        label {
+            display: block;
+            margin-bottom: 12px;
+            color: #2d3748;
+            font-weight: 500;
+        }
+        input[type="text"], input[type="number"], textarea {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 1em;
+            margin-top: 4px;
+            margin-bottom: 10px;
+            background: #fff;
+            transition: border 0.2s;
+        }
+        input[type="text"]:focus, input[type="number"]:focus, textarea:focus {
+            border: 1.5px solid #3182ce;
+            outline: none;
+        }
+        textarea[readonly] {
+            background: #f1f5f9;
+            color: #4a5568;
+            border: 1px solid #e2e8f0;
+            resize: vertical;
+        }
+        button[type="submit"], .btn-cancel {
+            background: #3182ce;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 22px;
+            font-size: 1em;
+            font-weight: 500;
+            cursor: pointer;
+            margin-right: 10px;
+            box-shadow: 0 2px 8px rgba(49,130,206,0.08);
+            transition: background 0.2s;
+        }
+        button[type="submit"]:hover, .btn-cancel:hover {
+            background: #2563eb;
+        }
+        .btn-cancel {
+            background: #a0aec0;
+        }
+        table {
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+        th, td {
+            padding: 12px 10px;
+            text-align: left;
+        }
+        th {
+            background: #f1f5f9;
+            color: #2d3748;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        tr:not(:last-child) td {
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .actions a {
+            display: inline-block;
+            margin-right: 8px;
+            color: #3182ce;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 4px 10px;
+            border-radius: 5px;
+            transition: background 0.15s, color 0.15s;
+        }
+        .actions a:hover {
+            background: #e0e7ef;
+            color: #2563eb;
+        }
+        @media (max-width: 800px) {
+            .container { padding: 10px; }
+            th, td { font-size: 0.95em; padding: 8px 4px; }
+            form { padding: 12px 8px; }
+        }
     </style>
 </head>
 <body>
-    <h1>Chart Settings</h1>
-    <h2><?php echo $edit_chart ? 'Edit Chart' : 'Add New Chart'; ?></h2>
-    <?php if ($error): ?>
-        <div class="error"><?php echo htmlspecialchars($error); ?></div>
-    <?php endif; ?>
-    <form method="post">
-        <?php if ($edit_chart): ?>
-            <input type="hidden" name="id" value="<?php echo $edit_chart['id']; ?>">
+    <div class="container">
+        <h1>Chart Settings</h1>
+        <h2><?php echo $edit_chart ? 'Edit Chart' : 'Add New Chart'; ?></h2>
+        <?php if ($error): ?>
+            <div class="error"><?php echo htmlspecialchars($error); ?></div>
         <?php endif; ?>
-        <label>Title:<br><input type="text" name="title" required value="<?php echo $edit_chart ? htmlspecialchars($edit_chart['title']) : ''; ?>"></label><br>
-        <label>Description:<br><textarea name="description" required><?php echo $edit_chart ? htmlspecialchars($edit_chart['description']) : ''; ?></textarea></label><br>
-        <label>Chart Type:<br><input type="text" name="chart_type" required value="<?php echo $edit_chart ? htmlspecialchars($edit_chart['chart_type']) : ''; ?>"></label><br>
-        <label>Data JSON:<br><textarea name="data_json" required><?php echo $edit_chart ? htmlspecialchars($edit_chart['data_json']) : ''; ?></textarea></label><br>
-        <label>Order:<br><input type="number" name="order" required value="<?php echo $edit_chart ? intval($edit_chart['order']) : 0; ?>"></label><br><br>
-        <button type="submit" name="<?php echo $edit_chart ? 'update' : 'add'; ?>"><?php echo $edit_chart ? 'Update' : 'Add'; ?></button>
-        <?php if ($edit_chart): ?>
-            <a href="chart_settings.php">Cancel</a>
-        <?php endif; ?>
-    </form>
-    <h2>All Charts</h2>
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Chart Type</th>
-            <th>Data JSON</th>
-            <th>Order</th>
-            <th>Created At</th>
-            <th>Updated At</th>
-            <th>Actions</th>
-        </tr>
-        <?php while ($row = $result->fetch_assoc()): ?>
-        <tr>
-            <td><?php echo $row['id']; ?></td>
-            <td><?php echo htmlspecialchars($row['title']); ?></td>
-            <td><?php echo htmlspecialchars($row['description']); ?></td>
-            <td><?php echo htmlspecialchars($row['chart_type']); ?></td>
-            <td><textarea readonly style="width:150px;height:40px;"><?php echo htmlspecialchars($row['data_json']); ?></textarea></td>
-            <td><?php echo $row['order']; ?></td>
-            <td><?php echo $row['created_at']; ?></td>
-            <td><?php echo $row['updated_at']; ?></td>
-            <td class="actions">
-                <a href="chart_settings.php?edit=<?php echo $row['id']; ?>">Edit</a>
-                <a href="chart_settings.php?delete=<?php echo $row['id']; ?>" onclick="return confirm('Delete this chart?');">Delete</a>
-            </td>
-        </tr>
-        <?php endwhile; ?>
-    </table>
+        <form method="post">
+            <?php if ($edit_chart): ?>
+                <input type="hidden" name="id" value="<?php echo $edit_chart['id']; ?>">
+            <?php endif; ?>
+            <label>Title:
+                <input type="text" name="title" required value="<?php echo $edit_chart ? htmlspecialchars($edit_chart['title']) : ''; ?>">
+            </label>
+            <label>Description:
+                <textarea name="description" required rows="2"><?php echo $edit_chart ? htmlspecialchars($edit_chart['description']) : ''; ?></textarea>
+            </label>
+            <label>Chart Type:
+                <input type="text" name="chart_type" required value="<?php echo $edit_chart ? htmlspecialchars($edit_chart['chart_type']) : ''; ?>">
+            </label>
+            <label>Data JSON:
+                <textarea name="data_json" required rows="3"><?php echo $edit_chart ? htmlspecialchars($edit_chart['data_json']) : ''; ?></textarea>
+            </label>
+            <label>Order:
+                <input type="number" name="order" required value="<?php echo $edit_chart ? intval($edit_chart['order']) : 0; ?>">
+            </label>
+            <button type="submit" name="<?php echo $edit_chart ? 'update' : 'add'; ?>"><?php echo $edit_chart ? 'Update' : 'Add'; ?></button>
+            <?php if ($edit_chart): ?>
+                <a href="chart_settings.php" class="btn-cancel">Cancel</a>
+            <?php endif; ?>
+        </form>
+        <h2>All Charts</h2>
+        <div style="overflow-x:auto;">
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Chart Type</th>
+                <th>Data JSON</th>
+                <th>Order</th>
+                <th>Created At</th>
+                <th>Updated At</th>
+                <th>Actions</th>
+            </tr>
+            <?php while ($row = $result->fetch_assoc()): ?>
+            <tr>
+                <td><?php echo $row['id']; ?></td>
+                <td><?php echo htmlspecialchars($row['title']); ?></td>
+                <td><?php echo htmlspecialchars($row['description']); ?></td>
+                <td><?php echo htmlspecialchars($row['chart_type']); ?></td>
+                <td><textarea readonly style="width:140px;height:38px;font-size:0.97em;"><?php echo htmlspecialchars($row['data_json']); ?></textarea></td>
+                <td><?php echo $row['order']; ?></td>
+                <td><?php echo $row['created_at']; ?></td>
+                <td><?php echo $row['updated_at']; ?></td>
+                <td class="actions">
+                    <a href="chart_settings.php?edit=<?php echo $row['id']; ?>">Edit</a>
+                    <a href="chart_settings.php?delete=<?php echo $row['id']; ?>" onclick="return confirm('Delete this chart?');">Delete</a>
+                </td>
+            </tr>
+            <?php endwhile; ?>
+        </table>
+        </div>
+    </div>
 </body>
 </html> 
