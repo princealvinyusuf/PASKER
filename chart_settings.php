@@ -84,14 +84,7 @@ if (isset($_GET['edit'])) {
             margin: 0;
             padding: 0;
         }
-        .container {
-            max-width: 950px;
-            margin: 40px auto;
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-            padding: 32px 28px 28px 28px;
-        }
+    
         h1 {
             text-align: center;
             color: #2d3748;
