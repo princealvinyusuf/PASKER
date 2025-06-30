@@ -25,21 +25,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $subject = $_POST['subject'];
     $file_url = $_POST['file_url'];
     $iframe_url = $_POST['iframe_url'];
-    $created_at = $_POST['created_at'] ?? null;
-    $updated_at = $_POST['updated_at'] ?? null;
 
     if (isset($_POST['save'])) {
-        // Add new record
-        $stmt = $conn->prepare("INSERT INTO information (title, description, date, type, subject, file_url, iframe_url, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param('sssssssss', $title, $description, $date, $type, $subject, $file_url, $iframe_url, $created_at, $updated_at);
+        // Add new record, set created_at and updated_at to NOW()
+        $stmt = $conn->prepare("INSERT INTO information (title, description, date, type, subject, file_url, iframe_url, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
+        $stmt->bind_param('sssssss', $title, $description, $date, $type, $subject, $file_url, $iframe_url);
         $stmt->execute();
         $stmt->close();
         header('Location: information_settings.php');
         exit();
     } elseif (isset($_POST['update'])) {
-        // Update record
-        $stmt = $conn->prepare("UPDATE information SET title=?, description=?, date=?, type=?, subject=?, file_url=?, iframe_url=?, created_at=?, updated_at=? WHERE id=?");
-        $stmt->bind_param('sssssssssi', $title, $description, $date, $type, $subject, $file_url, $iframe_url, $created_at, $updated_at, $id);
+        // Update record, set updated_at to NOW()
+        $stmt = $conn->prepare("UPDATE information SET title=?, description=?, date=?, type=?, subject=?, file_url=?, iframe_url=?, updated_at=NOW() WHERE id=?");
+        $stmt->bind_param('sssssssi', $title, $description, $date, $type, $subject, $file_url, $iframe_url, $id);
         $stmt->execute();
         $stmt->close();
         header('Location: information_settings.php');
@@ -243,12 +241,14 @@ $records = $conn->query("SELECT * FROM information ORDER BY id DESC");
                 <label>Iframe URL:
                     <input type="text" name="iframe_url" value="<?php echo htmlspecialchars($iframe_url); ?>">
                 </label>
-                <label>Created At:
-                    <input type="datetime-local" name="created_at" value="<?php echo $created_at ? date('Y-m-d\TH:i', strtotime($created_at)) : ''; ?>">
-                </label>
-                <label>Updated At:
-                    <input type="datetime-local" name="updated_at" value="<?php echo $updated_at ? date('Y-m-d\TH:i', strtotime($updated_at)) : ''; ?>">
-                </label>
+                <?php if ($edit_mode): ?>
+                    <label>Created At:
+                        <input type="text" value="<?php echo htmlspecialchars($created_at); ?>" readonly>
+                    </label>
+                    <label>Updated At:
+                        <input type="text" value="<?php echo htmlspecialchars($updated_at); ?>" readonly>
+                    </label>
+                <?php endif; ?>
                 <?php if ($edit_mode): ?>
                     <button type="submit" name="update">Update</button>
                     <a href="information_settings.php" class="btn btn-cancel">Cancel</a>
